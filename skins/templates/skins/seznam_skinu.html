@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>CS2 Wishlist</title>
+    <style>
+        body { background-color: #121212; color: #e0e0e0; }
+        .card { background-color: #1e1e1e; border: 1px solid #333; }
+        .owned-row { opacity: 0.4; background-color: #1a2a1a !important; }
+        .text-warning { color: #f39c12 !important; }
+        .btn-warning { background-color: #f39c12; border: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4 border-bottom border-secondary">
+        <div class="container">
+            <span class="navbar-brand fw-bold text-warning">CS2 DREAM WISHLIST</span>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="btn btn-outline-danger btn-sm">Odhlásit</button></form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row g-3 mb-4 text-center">
+            <div class="col-md-4"><div class="card p-3"><h6>CELKOVÁ CENA</h6><h3 class="text-white">{{ celkova_cena }} €</h3></div></div>
+            <div class="col-md-4"><div class="card p-3"><h6>HODNOTA VLASTNĚNÝCH</h6><h3 class="text-info">{{ koupeno_hodnota }} €</h3></div></div>
+            <div class="col-md-4"><div class="card p-3"><h6>ZBÝVÁ DOPLATIT</h6><h3 class="text-warning">{{ zbyva_koupit }} €</h3></div></div>
+        </div>
+
+        <div class="card p-4 mb-4">
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-6"><label class="small text-secondary">NÁZEV SKINU</label>{{ form.name }}</div>
+                <div class="col-md-2"><label class="small text-secondary">CENA (€)</label>{{ form.purchase_price }}</div>
+                <div class="col-md-2"><label class="small text-secondary">FLOAT</label>{{ form.float_value }}</div>
+                <div class="col-md-2"><label class="small text-secondary">RARITA</label>{{ form.rarity }}</div>
+                <button type="submit" class="btn btn-warning w-100">PŘIDAT DO WISHLISTU</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead><tr class="text-secondary"><th>Status</th><th>Předmět</th><th>Aktuální trh</th><th>Float</th><th></th></tr></thead>
+                <tbody>
+                    {% for skin in skiny %}
+                    <tr class="{% if skin.is_owned %}owned-row{% endif %}">
+                        <td>
+                            <a href="{% url 'toggle_owned' skin.id %}" class="btn btn-sm {% if skin.is_owned %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                                {% if skin.is_owned %}✓ Koupeno{% else %}○ Chci koupit{% endif %}
+                            </a>
+                        </td>
+                        <td><span class="text-warning fw-bold">{{ skin.name }}</span></td>
+                        <td>{{ skin.current_price }} €</td>
+                        <td>{{ skin.float_value }}</td>
+                        <td><a href="{% url 'smazat_skin' skin.id %}" class="btn btn-sm btn-outline-danger">×</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
