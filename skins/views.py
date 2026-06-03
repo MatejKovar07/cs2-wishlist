@@ -12,10 +12,10 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Registrace proběhla úspěšně! Vítej.")
+            messages.success(request, "Registrace proběhla úspěšně!")
             return redirect('prehled_skinu')
         else:
-            messages.error(request, "Registrace se nezdařila. Zkontroluj zadané údaje.")
+            messages.error(request, "Registrace se nezdařila.")
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -23,40 +23,51 @@ def register(request):
 @login_required
 def prehled_skinu(request):
     if request.method == 'POST':
-        # Použijeme tvůj formulář a naplníme ho daty z webu
         form = SkinForm(request.POST)
         if form.is_valid():
-            skin = form.save(commit=False)
-            skin.uzivatel = request.user
-            skin.save()
+            # TADY JE TA RYCHLÁ ZÁCHRANA:
+            # Vytáhneme data z tvého anglického formuláře
+            clean_name = form.cleaned_data.get('name')
+            clean_price = form.cleaned_data.get('purchase_price')
+            clean_float = form.cleaned_data.get('float_value')
+            clean_rarity = form.cleaned_data.get('rarity')
+
+            # Tady provedeme tvrdou kontrolu přímo ve view, aby to neprošlo ani omylem
+            if clean_price < 0:
+                messages.error(request, "Chyba: Cena nesmí být záporná!")
+                return redirect('prehled_skinu')
+                
+            if clean_float < 0 or clean_float > 1:
+                messages.error(request, "Chyba: Float musí být mezi 0.0 a 1.0!")
+                return redirect('prehled_skinu')
+
+            # Pokud je vše OK, ručně to naplníme do tvého českého modelu Skin
+            Skin.objects.create(
+                uzivatel=request.user,
+                nazev=clean_name,
+                cena=clean_price,
+                float_value=clean_float,
+                rarita=clean_rarity,
+                koupeno=False
+            )
+            
             messages.success(request, "Skin byl úspěšně přidán!")
             return redirect('prehled_skinu')
         else:
-            # Pokud zadáš záporné číslo, Django formulář označí jako nevalidní
-            # a my tyto chyby vypíšeme uživateli jako červenou hlášku
-            for field, errors in form.errors.items():
-                for error in errors:
-                    # Přeložíme název políčka pro uživatele, aby to vypadalo hezky
-                    field_name = "Cena" if field == "purchase_price" else field
-                    field_name = "Float" if field == "float_value" else field_name
-                    field_name = "Název" if field == "name" else field_name
-                    messages.error(request, f"Chyba v poli {field_name}: {error}")
+            messages.error(request, "Formulář obsahuje neplatná data.")
             return redirect('prehled_skinu')
 
-    # Načtení skinů pro přihlášeného uživatele
+    # Načtení dat pro tabulku a statistiky
     skiny = Skin.objects.filter(uzivatel=request.user)
-    
-    # Vygenerujeme prázdný tvůj formulář pro zobrazení na stránce
     form = SkinForm()
     
-    # Výpočty statistik (zde používáme české názvy z tvého models.py)
     celkova_cena = sum(s.cena for s in skiny)
     hodnota_vlastnenych = sum(s.cena for s in skiny if s.koupeno)
     zbyva_doplatit = celkova_cena - hodnota_vlastnenych
 
     context = {
         'skiny': skiny,
-        'form': form, # Posíláme tvůj formulář do šablony
+        'form': form,
         'celkova_cena': celkova_cena,
         'hodnota_vlastnenych': hodnota_vlastnenych,
         'zbyva_doplatit': zbyva_doplatit,
