@@ -90,7 +90,7 @@
                 {{ form.rarity }}
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn w-100 fw-bold" style="background-color: #ffb703; color: #000;">PŘIDAT DO WISHLISTU</button>
+                <button type="submit" class="btn btn-warning w-100 fw-bold" style="background-color: #ffb703; border: none; color: #1e1f22; padding: 9px;">Pridat skin</button>
             </div>
         </form>
     </div>
@@ -106,7 +106,6 @@
             </tr>
         </thead>
         <tbody>
-            {% endfor %}
             {% for skin in skiny %}
             <tr>
                 <td>
@@ -118,7 +117,7 @@
                 <td>{{ skin.cena }} €</td>
                 <td>{{ skin.float_value }}</td>
                 <td class="text-center">
-                    <a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-sm btn-outline-danger">×</a>
+                    <a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a>
                 </td>
             </tr>
             {% empty %}
