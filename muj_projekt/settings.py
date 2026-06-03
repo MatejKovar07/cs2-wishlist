@@ -1,19 +1,20 @@
 import os
 from pathlib import Path
 
-# Základní adresář projektu
+# 1. DEFINICE ZÁKLADNÍHO ADRESÁŘE (Opraveno a posunuto na začátek)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Tajný klíč (pro produkci by měl být skrytý, ale pro funkčnost ho necháváme)
+# Tajný klíč pro Django
 SECRET_KEY = 'django-insecure-t#)@m%u0!_k5_@91^1g(ef0vzkf46m(1j-w-83hfj9(sjwsh+%'
 
-# Debug režim necháme zapnutý, abychom viděli případné chyby
+# Vývojový režim
 DEBUG = True
 
-# BEZPEČNOST: Povolení domén pro lokální PC i PythonAnywhere
+# Bezpečnostní povolení domén (pro lokální PC i server)
 ALLOWED_HOSTS = ['makousek1.eu.pythonanywhere.com', '127.0.0.1', 'localhost']
 
-# Definice nainstalovaných aplikací
+
+# Registrace aplikací
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,12 +56,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'muj_projekt.wsgi.application'
 
 
-# --- DYNAMICKÉ NASTAVENÍ DATABÁZE ---
-# Pokud proměnná 'PYTHONANYWHERE_SITE' existuje, znamená to, že kód běží online na serveru.
+# --- HYBRIDNÍ NASTAVENÍ DATABÁZE (XAMPP vs PythonAnywhere) ---
 ON_PYTHONANYWHERE = 'PYTHONANYWHERE_SITE' in os.environ
 
 if ON_PYTHONANYWHERE:
-    # NASTAVENÍ PRO SERVER: Použije samostatný soubor SQLite (nepotřebuje XAMPP)
+    # NASTAVENÍ PRO SERVER: Použije souborovou SQLite databázi (nepotřebuje XAMPP)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -98,19 +98,19 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Jazyk a časové pásmo
+# Jazyk a lokalizace
 LANGUAGE_CODE = 'cs'
 TIME_ZONE = 'Europe/Prague'
 USE_I18N = True
 USE_TZ = True
 
 
-# Statické soubory (CSS, JS, obrázky)
+# Statické soubory
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Přesměrování po přihlášení a odhlášení
+# Přesměrování přihlášení
 LOGIN_REDIRECT_URL = 'prehled_skinu'
 LOGOUT_REDIRECT_URL = 'login'
