@@ -9,7 +9,7 @@
         .card-stat { background-color: #2b2d31; border: 1px solid #3f4248; border-radius: 8px; text-align: center; padding: 20px; }
         .form-container { background-color: #2b2d31; padding: 20px; border-radius: 8px; border: 1px solid #3f4248; }
         
-        /* Stylování políček z Django formuláře, aby seděla do tmavého designu */
+        /* Stylování políček z Django formuláře, aby přesně seděla do tmavého vzhledu */
         .form-container input, .form-container select { 
             background-color: #1e1f22 !important; 
             color: white !important; 
@@ -106,6 +106,7 @@
             </tr>
         </thead>
         <tbody>
+            {% endfor %}
             {% for skin in skiny %}
             <tr>
                 <td>
