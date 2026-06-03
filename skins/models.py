@@ -1,25 +1,31 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
 class Skin(models.Model):
-    # Definice rarit pro dropdown menu[cite: 3]
     RARITY_CHOICES = [
-        ('Consumer Grade', 'Consumer Grade (Bílá)'),
-        ('Industrial Grade', 'Industrial Grade (Světle modrá)'),
-        ('Mil-Spec', 'Mil-Spec (Tmavě modrá)'),
-        ('Restricted', 'Restricted (Fialová)'),
-        ('Classified', 'Classified (Růžová)'),
-        ('Covert', 'Covert (Červená)'),
-        ('Contraband', 'Contraband (Oranžová)'),
+        ('Consumer', 'Consumer Grade'),
+        ('Industrial', 'Industrial Grade'),
+        ('Mil-Spec', 'Mil-Spec Grade'),
+        ('Restricted', 'Restricted'),
+        ('Classified', 'Classified'),
+        ('Covert', 'Covert'),
+        ('Special', '★ Knife / ★ Gloves'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
-    current_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    rarity = models.CharField(max_length=50, choices=RARITY_CHOICES) # Propojení s choices[cite: 3]
-    float_value = models.FloatField(default=0.0)
-    is_owned = models.BooleanField(default=False)
+    uzivatel = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    nazev = models.CharField(max_length=100)
+    cena = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0.0)]
+    )
+    float_value = models.FloatField(
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+        default=0.0
+    )
+    rarita = models.CharField(max_length=50, choices=RARITY_CHOICES)
+    koupeno = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return f"{self.nazev} ({self.rarita})"
