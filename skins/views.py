@@ -25,23 +25,13 @@ def prehled_skinu(request):
     if request.method == 'POST':
         form = SkinForm(request.POST)
         if form.is_valid():
-            # TADY JE TA RYCHLÁ ZÁCHRANA:
-            # Vytáhneme data z tvého anglického formuláře
+            # Data jsou automaticky zkontrolovaná a bezpečná
             clean_name = form.cleaned_data.get('name')
             clean_price = form.cleaned_data.get('purchase_price')
             clean_float = form.cleaned_data.get('float_value')
             clean_rarity = form.cleaned_data.get('rarity')
 
-            # Tady provedeme tvrdou kontrolu přímo ve view, aby to neprošlo ani omylem
-            if clean_price < 0:
-                messages.error(request, "Chyba: Cena nesmí být záporná!")
-                return redirect('prehled_skinu')
-                
-            if clean_float < 0 or clean_float > 1:
-                messages.error(request, "Chyba: Float musí být mezi 0.0 a 1.0!")
-                return redirect('prehled_skinu')
-
-            # Pokud je vše OK, ručně to naplníme do tvého českého modelu Skin
+            # Uložení do tvé české databáze
             Skin.objects.create(
                 uzivatel=request.user,
                 nazev=clean_name,
@@ -54,10 +44,13 @@ def prehled_skinu(request):
             messages.success(request, "Skin byl úspěšně přidán!")
             return redirect('prehled_skinu')
         else:
-            messages.error(request, "Formulář obsahuje neplatná data.")
+            # Pokud někdo pošle záporné číslo, formulář selže a vypíše přesnou chybu
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Chyba v políčku {field}: {error}")
             return redirect('prehled_skinu')
 
-    # Načtení dat pro tabulku a statistiky
+    # Načtení dat pro tabulku
     skiny = Skin.objects.filter(uzivatel=request.user)
     form = SkinForm()
     
