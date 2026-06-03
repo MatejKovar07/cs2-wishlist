@@ -1,7 +1,23 @@
-from django.shortcuts import render, redirect, get_object_or_400
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from django.contrib import messages
 from .models import Skin
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registrace proběhla úspěšně! Vítej.")
+            return redirect('prehled_skinu')
+        else:
+            messages.error(request, "Registrace se nezdařila. Zkontroluj zadané údaje.")
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 @login_required
 def prehled_skinu(request):
@@ -49,13 +65,13 @@ def prehled_skinu(request):
 
 @login_required
 def smazat_skinu(request, skin_id):
-    skin = get_object_or_400(Skin, id=skin_id, uzivatel=request.user)
+    skin = get_object_or_404(Skin, id=skin_id, uzivatel=request.user)
     skin.delete()
     return redirect('prehled_skinu')
 
 @login_required
 def zmenit_status(request, skin_id):
-    skin = get_object_or_400(Skin, id=skin_id, uzivatel=request.user)
+    skin = get_object_or_404(Skin, id=skin_id, uzivatel=request.user)
     skin.koupeno = not skin.koupeno
     skin.save()
     return redirect('prehled_skinu')
