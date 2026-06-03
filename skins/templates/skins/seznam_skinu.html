@@ -8,6 +8,13 @@
         body { background-color: #1e1f22; color: #fff; }
         .card-stat { background-color: #2b2d31; border: 1px solid #3f4248; border-radius: 8px; text-align: center; padding: 20px; }
         .form-container { background-color: #2b2d31; padding: 20px; border-radius: 8px; border: 1px solid #3f4248; }
+        .form-container p { margin-bottom: 10px; }
+        .form-container input, .form-container select { 
+            background-color: #1e1f22 !important; 
+            color: white !important; 
+            border: 1px solid #3f4248 !important; 
+            display: block; width: 100%; padding: 8px; border-radius: 5px;
+        }
         .table-custom { background-color: #2b2d31; color: #fff; border-radius: 8px; overflow: hidden; }
         .table-custom th { background-color: #232428; color: #aaa; border: none; }
         .table-custom td { border-bottom: 1px solid #3f4248; background-color: #2b2d31; color: #fff; vertical-align: middle; }
@@ -23,6 +30,7 @@
         </form>
     </div>
 
+    <!-- Statistiky -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card-stat">
@@ -44,40 +52,27 @@
         </div>
     </div>
 
+    <!-- Chybové zprávy -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
 
+    <!-- NEPRŮSTŘELNÝ FORMULÁŘ -->
     <div class="form-container mb-4">
-        <form method="POST" class="row g-3 align-items-end">
+        <h5 class="mb-3 text-uppercase fw-bold" style="color: #ffb703;">Přidat nový skin</h5>
+        <form method="POST">
             {% csrf_token %}
-            <div class="col-md-4">
-                <label class="form-label text-muted small text-uppercase fw-bold">Název skinu</label>
-                {{ form.name }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label text-muted small text-uppercase fw-bold">Cena (€)</label>
-                {{ form.purchase_price }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label text-muted small text-uppercase fw-bold">Float</label>
-                {{ form.float_value }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label text-muted small text-uppercase fw-bold">Rarita</label>
-                {{ form.rarity }}
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn w-100 fw-bold" style="background-color: #ffb703; color: #000;">PŘIDAT DO WISHLISTU</button>
-            </div>
+            {{ form.as_p }}
+            <button type="submit" class="btn w-100 fw-bold mt-2" style="background-color: #ffb703; color: #000;">PŘIDAT DO WISHLISTU</button>
         </form>
     </div>
 
+    <!-- Tabulka -->
     <table class="table table-custom">
         <thead>
             <tr>
