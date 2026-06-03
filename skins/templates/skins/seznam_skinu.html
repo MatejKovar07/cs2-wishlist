@@ -58,27 +58,19 @@
             {% csrf_token %}
             <div class="col-md-4">
                 <label class="form-label text-muted small text-uppercase fw-bold">Název skinu</label>
-                <input type="text" name="nazev" class="form-control bg-dark text-white border-secondary" placeholder="Např. AK-47 | Slate" required>
+                {{ form.name }}
             </div>
             <div class="col-md-2">
                 <label class="form-label text-muted small text-uppercase fw-bold">Cena (€)</label>
-                <input type="number" name="cena" step="0.01" min="0" class="form-control bg-dark text-white border-secondary" required>
+                {{ form.purchase_price }}
             </div>
             <div class="col-md-2">
                 <label class="form-label text-muted small text-uppercase fw-bold">Float</label>
-                <input type="number" name="float_value" step="0.000001" min="0" max="1" class="form-control bg-dark text-white border-secondary" placeholder="0.0" required>
+                {{ form.float_value }}
             </div>
             <div class="col-md-2">
                 <label class="form-label text-muted small text-uppercase fw-bold">Rarita</label>
-                <select name="rarita" class="form-select bg-dark text-white border-secondary" required>
-                    <option value="Consumer">Consumer Grade</option>
-                    <option value="Industrial">Industrial Grade</option>
-                    <option value="Mil-Spec Grade">Mil-Spec Grade</option>
-                    <option value="Restricted">Restricted</option>
-                    <option value="Classified">Classified</option>
-                    <option value="Covert">Covert</option>
-                    <option value="Special">★ Knife / ★ Gloves</option>
-                </select>
+                {{ form.rarity }}
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn w-100 fw-bold" style="background-color: #ffb703; color: #000;">PŘIDAT DO WISHLISTU</button>

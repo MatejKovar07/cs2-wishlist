@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from .models import Skin
+from .forms import SkinForm
 
 def register(request):
     if request.method == 'POST':
@@ -22,41 +23,40 @@ def register(request):
 @login_required
 def prehled_skinu(request):
     if request.method == 'POST':
-        nazev = request.POST.get('nazev')
-        cena_raw = request.POST.get('cena')
-        float_raw = request.POST.get('float_value')
-        rarita = request.POST.get('rarita')
-        
-        try:
-            cena = float(cena_raw)
-            float_value = float(float_raw)
-            
-            if cena < 0:
-                messages.error(request, "Cena nesmí být záporná!")
-            elif float_value < 0 or float_value > 1:
-                messages.error(request, "Float musí být v rozmezí od 0 do 1!")
-            else:
-                Skin.objects.create(
-                    uzivatel=request.user,
-                    nazev=nazev,
-                    cena=cena,
-                    float_value=float_value,
-                    rarita=rarita
-                )
-                messages.success(request, "Skin byl úspěšně přidán!")
-        except ValueError:
-            messages.error(request, "Zadány neplatné číselné hodnoty.")
-            
-        return redirect('prehled_skinu')
+        # Použijeme tvůj formulář a naplníme ho daty z webu
+        form = SkinForm(request.POST)
+        if form.is_valid():
+            skin = form.save(commit=False)
+            skin.uzivatel = request.user
+            skin.save()
+            messages.success(request, "Skin byl úspěšně přidán!")
+            return redirect('prehled_skinu')
+        else:
+            # Pokud zadáš záporné číslo, Django formulář označí jako nevalidní
+            # a my tyto chyby vypíšeme uživateli jako červenou hlášku
+            for field, errors in form.errors.items():
+                for error in errors:
+                    # Přeložíme název políčka pro uživatele, aby to vypadalo hezky
+                    field_name = "Cena" if field == "purchase_price" else field
+                    field_name = "Float" if field == "float_value" else field_name
+                    field_name = "Název" if field == "name" else field_name
+                    messages.error(request, f"Chyba v poli {field_name}: {error}")
+            return redirect('prehled_skinu')
 
+    # Načtení skinů pro přihlášeného uživatele
     skiny = Skin.objects.filter(uzivatel=request.user)
     
+    # Vygenerujeme prázdný tvůj formulář pro zobrazení na stránce
+    form = SkinForm()
+    
+    # Výpočty statistik (zde používáme české názvy z tvého models.py)
     celkova_cena = sum(s.cena for s in skiny)
     hodnota_vlastnenych = sum(s.cena for s in skiny if s.koupeno)
     zbyva_doplatit = celkova_cena - hodnota_vlastnenych
 
     context = {
         'skiny': skiny,
+        'form': form, # Posíláme tvůj formulář do šablony
         'celkova_cena': celkova_cena,
         'hodnota_vlastnenych': hodnota_vlastnenych,
         'zbyva_doplatit': zbyva_doplatit,
