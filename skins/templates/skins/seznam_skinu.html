@@ -59,7 +59,7 @@
             <tr>
                 <td><a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">{% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}</a></td>
                 <td class="fw-bold">
-                    <a href="https://csfloat.com/" target="_blank" style="color: #ffffff; text-decoration: none;">
+                    <a href="https://csfloat.com/db?name={{ skin.nazev|urlencode }}" target="_blank" style="color: #ffffff; text-decoration: none;">
                         {{ skin.nazev }}
                     </a> 
                     <br><small class="text-muted">{{ skin.rarita }}</small>
