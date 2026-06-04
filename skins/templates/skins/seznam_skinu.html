@@ -57,19 +57,27 @@
         <tbody>
             {% for skin in skiny %}
             <tr>
-                <td><a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">{% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}</a></td>
+                <td>
+                    <a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                        {% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}
+                    </a>
+                </td>
                 <td class="fw-bold">
-                    <a href="https://csfloat.com/db?name={{ skin.nazev|urlencode }}" target="_blank" style="color: #ffffff; text-decoration: none;">
+                    <a href="https://csfloat.com/db?name={{ skin.nazev|urlencode }}" target="_blank" style="color: #ffffff; text-decoration: underline;">
                         {{ skin.nazev }}
                     </a> 
                     <br><small class="text-muted">{{ skin.rarita }}</small>
                 </td>
                 <td>{{ skin.cena }} €</td>
                 <td>{{ skin.float_value }}</td>
-                <td class="text-center"><a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a></td>
+                <td class="text-center">
+                    <a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a>
+                </td>
             </tr>
             {% empty %}
-            <tr><td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td></tr>
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
