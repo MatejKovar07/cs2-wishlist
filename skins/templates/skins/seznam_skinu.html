@@ -8,31 +8,13 @@
         body { background-color: #1e1f22; color: #fff; }
         .card-stat { background-color: #2b2d31; border: 1px solid #3f4248; border-radius: 8px; text-align: center; padding: 20px; }
         .form-container { background-color: #2b2d31; padding: 20px; border-radius: 8px; border: 1px solid #3f4248; }
-        
-        /* Zlepšení čitelnosti malých popisků a textů */
         .text-muted { color: #b3b9c1 !important; }
         .form-label { color: #e3e6eb !important; }
         .table-custom th { background-color: #232428; color: #e3e6eb; border: none; }
-
-        /* Stylování políček formuláře pro lepší kontrast */
         .form-container input, .form-container select { 
-            background-color: #1e1f22 !important; 
-            color: #ffffff !important; 
-            border: 1px solid #4e525a !important; 
-            display: block; 
-            width: 100%; 
-            padding: 8px; 
-            border-radius: 5px;
+            background-color: #1e1f22 !important; color: #ffffff !important; border: 1px solid #4e525a !important; display: block; width: 100%; padding: 8px; border-radius: 5px;
         }
-        .form-container input::placeholder {
-            color: #72767d !important;
-        }
-        .form-container input:focus, .form-container select:focus {
-            border-color: #ffb703 !important;
-            outline: none;
-            box-shadow: 0 0 5px rgba(255, 183, 3, 0.5);
-        }
-
+        .form-container input:focus, .form-container select:focus { border-color: #ffb703 !important; outline: none; box-shadow: 0 0 5px rgba(255, 183, 3, 0.5); }
         .table-custom { background-color: #2b2d31; color: #fff; border-radius: 8px; overflow: hidden; }
         .table-custom td { border-bottom: 1px solid #3f4248; background-color: #2b2d31; color: #fff; vertical-align: middle; }
     </style>
@@ -40,12 +22,12 @@
 <body class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 style="color: #ffb703; font-weight: bold; margin-bottom: 0;">CS2 DREAM WISHLIST</h1>
+        <div>
+            <h1 style="color: #ffb703; font-weight: bold; margin-bottom: 0;">CS2 DREAM WISHLIST</h1>
+            <a href="https://matejkovar07.github.io/" style="color: #6c757d; text-decoration: none; font-size: 0.9rem;">← Zpět na portfolio</a>
+        </div>
         <div class="d-flex align-items-center gap-3">
-            <!-- Informace o přihlášeném uživateli -->
-            <span class="badge bg-secondary p-2" style="font-size: 0.9rem;">
-                Uživatel: <strong>{{ user.username }}</strong>
-            </span>
+            <span class="badge bg-secondary p-2">Uživatel: <strong>{{ user.username }}</strong></span>
             <form action="{% url 'logout' %}" method="post" style="margin: 0;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-danger btn-sm">Odhlásit</button>
@@ -54,89 +36,40 @@
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card-stat">
-                <small class="text-muted text-uppercase fw-bold">Celková cena</small>
-                <h2 class="fw-bold mt-1">{{ celkova_cena }} €</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card-stat">
-                <small class="text-muted text-uppercase fw-bold">Hodnota vlastněných</small>
-                <h2 class="fw-bold mt-1" style="color: #00b4d8;">{{ hodnota_vlastnenych }} €</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card-stat">
-                <small class="text-muted text-uppercase fw-bold">Zbývá doplatit</small>
-                <h2 class="fw-bold mt-1" style="color: #ffb703;">{{ zbyva_doplatit }} €</h2>
-            </div>
-        </div>
+        <div class="col-md-4"><div class="card-stat"><small class="text-muted text-uppercase fw-bold">Celková cena</small><h2 class="fw-bold mt-1">{{ celkova_cena }} €</h2></div></div>
+        <div class="col-md-4"><div class="card-stat"><small class="text-muted text-uppercase fw-bold">Hodnota vlastněných</small><h2 class="fw-bold mt-1" style="color: #00b4d8;">{{ hodnota_vlastnenych }} €</h2></div></div>
+        <div class="col-md-4"><div class="card-stat"><small class="text-muted text-uppercase fw-bold">Zbývá doplatit</small><h2 class="fw-bold mt-1" style="color: #ffb703;">{{ zbyva_doplatit }} €</h2></div></div>
     </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
 
     <div class="form-container mb-4">
         <form method="POST" action="{% url 'prehled_skinu' %}" class="row g-3 align-items-end">
             {% csrf_token %}
-            <div class="col-md-4">
-                <label class="form-label small text-uppercase fw-bold">Název skinu</label>
-                {{ form.name }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label small text-uppercase fw-bold">Cena (€)</label>
-                {{ form.purchase_price }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label small text-uppercase fw-bold">Float</label>
-                {{ form.float_value }}
-            </div>
-            <div class="col-md-2">
-                <label class="form-label small text-uppercase fw-bold">Rarita</label>
-                {{ form.rarity }}
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-warning w-100 fw-bold" style="background-color: #ffb703; border: none; color: #1e1f22; padding: 9px;">Pridat skin</button>
-            </div>
+            <div class="col-md-4"><label class="form-label small text-uppercase fw-bold">Název skinu</label>{{ form.name }}</div>
+            <div class="col-md-2"><label class="form-label small text-uppercase fw-bold">Cena (€)</label>{{ form.purchase_price }}</div>
+            <div class="col-md-2"><label class="form-label small text-uppercase fw-bold">Float</label>{{ form.float_value }}</div>
+            <div class="col-md-2"><label class="form-label small text-uppercase fw-bold">Rarita</label>{{ form.rarity }}</div>
+            <div class="col-md-2"><button type="submit" class="btn btn-warning w-100 fw-bold" style="background-color: #ffb703; color: #1e1f22;">Pridat skin</button></div>
         </form>
     </div>
 
     <table class="table table-custom">
-        <thead>
-            <tr>
-                <th>Status</th>
-                <th>Předmět</th>
-                <th>Aktuální trh</th>
-                <th>Float</th>
-                <th class="text-center">Akce</th>
-            </tr>
-        </thead>
+        <thead><tr><th>Status</th><th>Předmět</th><th>Aktuální trh</th><th>Float</th><th class="text-center">Akce</th></tr></thead>
         <tbody>
             {% for skin in skiny %}
             <tr>
-                <td>
-                    <a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">
-                        {% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}
-                    </a>
+                <td><a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">{% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}</a></td>
+                <td class="fw-bold">
+                    <a href="https://csfloat.com/" target="_blank" style="color: #ffffff; text-decoration: none;">
+                        {{ skin.nazev }}
+                    </a> 
+                    <br><small class="text-muted">{{ skin.rarita }}</small>
                 </td>
-                <td class="fw-bold">{{ skin.nazev }} <br><small class="text-muted">{{ skin.rarita }}</small></td>
                 <td>{{ skin.cena }} €</td>
                 <td>{{ skin.float_value }}</td>
-                <td class="text-center">
-                    <a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a>
-                </td>
+                <td class="text-center"><a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a></td>
             </tr>
             {% empty %}
-            <tr>
-                <td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td>
-            </tr>
+            <tr><td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td></tr>
             {% endfor %}
         </tbody>
     </table>
