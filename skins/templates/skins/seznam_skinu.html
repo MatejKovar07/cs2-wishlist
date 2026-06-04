@@ -24,7 +24,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 style="color: #ffb703; font-weight: bold; margin-bottom: 0;">CS2 DREAM WISHLIST</h1>
-            <a href="https://matejkovar07.github.io/" style="color: #6c757d; text-decoration: none; font-size: 0.9rem;">← Zpět na portfolio</a>
+            <a href="https://matejkovar07.github.io/" style="color: #6c757d; text-decoration: none; font-size: 0.9rem; margin-right: 15px;">← Zpět na portfolio</a>
+            <a href="https://csfloat.com/" target="_blank" style="color: #ffb703; text-decoration: none; font-size: 0.9rem;">Otevřít CSFloat →</a>
         </div>
         <div class="d-flex align-items-center gap-3">
             <span class="badge bg-secondary p-2">Uživatel: <strong>{{ user.username }}</strong></span>
@@ -57,27 +58,17 @@
         <tbody>
             {% for skin in skiny %}
             <tr>
-                <td>
-                    <a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">
-                        {% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}
-                    </a>
-                </td>
+                <td><a href="{% url 'zmenit_status' skin.id %}" class="btn btn-sm {% if skin.koupeno %}btn-success{% else %}btn-outline-secondary{% endif %}">{% if skin.koupeno %}✓ Koupeno{% else %}Chci koupit{% endif %}</a></td>
                 <td class="fw-bold">
-                    <a href="https://csfloat.com/db?name={{ skin.nazev|urlencode }}" target="_blank" style="color: #ffffff; text-decoration: underline;">
-                        {{ skin.nazev }}
-                    </a> 
+                    {{ skin.nazev }}
                     <br><small class="text-muted">{{ skin.rarita }}</small>
                 </td>
                 <td>{{ skin.cena }} €</td>
                 <td>{{ skin.float_value }}</td>
-                <td class="text-center">
-                    <a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a>
-                </td>
+                <td class="text-center"><a href="{% url 'smazat_skinu' skin.id %}" class="btn btn-danger btn-sm">Smazat</a></td>
             </tr>
             {% empty %}
-            <tr>
-                <td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td>
-            </tr>
+            <tr><td colspan="5" class="text-center text-muted py-4">Tvůj wishlist je prázdný. Přidej svůj první skin!</td></tr>
             {% endfor %}
         </tbody>
     </table>
